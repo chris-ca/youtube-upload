@@ -41,6 +41,10 @@ def get_resource(client_secrets_file, credentials_file, get_code_callback):
     credentials = _get_credentials(flow, storage, get_code_callback)
     if credentials:
         httplib = httplib2.Http()
-        httplib.redirect_codes = httplib.redirect_codes - {308}
+        try:
+            httplib.redirect_codes = httplib.redirect_codes - {308}
+        except AttributeError:
+            pass
+
         http = credentials.authorize(httplib)
         return googleapiclient.discovery.build("youtube", "v3", http=http)
